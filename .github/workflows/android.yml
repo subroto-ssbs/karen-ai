@@ -1,0 +1,49 @@
+
+name: Build Karen Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Create Flutter project
+        run: |
+          flutter create --project-name karen_ai --org com.karenai --platforms android build_workspace
+          cp lib/main.dart build_workspace/lib/main.dart
+
+      - name: Get dependencies
+        working-directory: build_workspace
+        run: flutter pub get
+
+      - name: Build APK
+        working-directory: build_workspace
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Karen-Android-APK
+          path: build_workspace/build/app/outputs/flutter-apk/app-release.apk
+          
