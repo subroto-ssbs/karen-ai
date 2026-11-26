@@ -32,6 +32,10 @@ jobs:
         run: |
           flutter create --project-name karen_ai --org com.karenai --platforms android build_workspace
           cp lib/main.dart build_workspace/lib/main.dart
+  
+      - name: Add voice package
+        working-directory: build_workspace
+        run: flutter pub add flutter_tts
 
       - name: Get dependencies
         working-directory: build_workspace
