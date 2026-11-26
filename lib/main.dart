@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 void main() {
   runApp(const KarenApp());
@@ -12,7 +13,7 @@ class KarenApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Karen AI',
+      title: 'Personal Assistant',
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color(0xFF070B18),
         colorScheme: const ColorScheme.dark(
@@ -25,23 +26,45 @@ class KarenApp extends StatelessWidget {
   }
 }
 
-class KarenHome extends StatelessWidget {
+class KarenHome extends StatefulWidget {
   const KarenHome({super.key});
+
+  @override
+  State<KarenHome> createState() => _KarenHomeState();
+}
+
+class _KarenHomeState extends State<KarenHome> {
+  final FlutterTts _tts = FlutterTts();
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _speakGreeting();
+    });
+  }
+
+  Future<void> _speakGreeting() async {
+    await _tts.setLanguage('en-US');
+    await _tts.setSpeechRate(0.45);
+    await _tts.setVolume(1.0);
+    await _tts.speak("Hello, Sir. I'm ready.");
+  }
+
+  @override
+  void dispose() {
+    _tts.stop();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text(
-          'KAREN AI',
-          style: TextStyle(
-            color: Color(0xFF00E5FF),
-            letterSpacing: 4,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
+        elevation: 0,
+        toolbarHeight: 20,
       ),
       body: SafeArea(
         child: Padding(
@@ -49,6 +72,7 @@ class KarenHome extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 35),
+
               Container(
                 width: 170,
                 height: 170,
@@ -67,7 +91,8 @@ class KarenHome extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF00E5FF).withOpacity(0.35),
+                      color: const Color(0xFF00E5FF)
+                          .withOpacity(0.35),
                       blurRadius: 35,
                       spreadRadius: 5,
                     ),
@@ -79,49 +104,63 @@ class KarenHome extends StatelessWidget {
                   size: 100,
                 ),
               ),
+
               const SizedBox(height: 28),
+
               const Text(
-                'Hello, I am Karen.',
+                "Hello, Sir. I'm ready.",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
+
               const SizedBox(height: 8),
+
               const Text(
                 'Your personal AI assistant',
                 style: TextStyle(color: Colors.white60),
               ),
+
               const SizedBox(height: 35),
+
               _featureCard(
                 Icons.chat_bubble_outline,
                 'AI Chat',
                 'Talk with Karen',
               ),
+
               _featureCard(
                 Icons.mic_none,
                 'Voice Assistant',
                 'Voice features coming soon',
               ),
+
               _featureCard(
                 Icons.psychology_outlined,
                 'Memory',
                 'Personal memory coming soon',
               ),
+
               _featureCard(
                 Icons.language,
                 'Web Search',
                 'Smart search coming soon',
               ),
+
               const Spacer(),
+
               const Text(
-                'KAREN AI • VERSION 0.1',
+                'VERSION 0.1',
                 style: TextStyle(
                   color: Colors.white38,
                   letterSpacing: 2,
                   fontSize: 11,
                 ),
               ),
+
               const SizedBox(height: 12),
             ],
           ),
@@ -130,18 +169,28 @@ class KarenHome extends StatelessWidget {
     );
   }
 
-  Widget _featureCard(IconData icon, String title, String subtitle) {
+  Widget _featureCard(
+    IconData icon,
+    String title,
+    String subtitle,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFF111A30),
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: const Color(0xFF233B5B)),
+        border: Border.all(
+          color: const Color(0xFF233B5B),
+        ),
       ),
       child: Row(
         children: [
-          Icon(icon, color: const Color(0xFF00E5FF), size: 28),
+          Icon(
+            icon,
+            color: const Color(0xFF00E5FF),
+            size: 28,
+          ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -175,4 +224,3 @@ class KarenHome extends StatelessWidget {
     );
   }
 }
-
